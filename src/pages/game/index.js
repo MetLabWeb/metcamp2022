@@ -1,24 +1,34 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Button from "../../components/Button";
 import QuestionCard from "../../components/QuestionCard"
+import Result from "../../components/Result";
 
 const API_URL = "https://62bb6e36573ca8f83298fbef.mockapi.io/metcampweb22/v1/questions/harry-potter";
 
 function Game() {
-    const [ loading, setLoading ] = useState(true);
-    const [ questions, setQuestions ] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [questions, setQuestions] = useState([]);
+    const [selectedAnswers, setSelectedAnswers] = useState([]);
+    const [result, setResult] = useState(0);
+    const [mostrarResultado, setMostrarResultado] = useState(false);
+
+    function calcularResultado() {
+        const respuestasCorrectas = selectedAnswers.filter((respuesta) => respuesta.valorOpcion === true)
+        setResult(respuestasCorrectas.length)
+        setMostrarResultado(true)
+    }
 
     useEffect(() => {
         fetch(API_URL)
-        .then(response => response.json())
-        .then(
-            data => {
-                console.log(data)
-                setQuestions(data)
-            }
-        )
-        .catch(error => console.log(error))
-        .finally(() => setLoading(false))
+            .then(response => response.json())
+            .then(
+                data => {
+                    setQuestions(data)
+                }
+            )
+            .catch(error => console.log(error))
+            .finally(() => setLoading(false))
     }, [])
 
     return (
@@ -36,20 +46,40 @@ function Game() {
                 </nav>
                 {
                     loading &&
-                        <div>Cargando...</div>
+                    <div>Cargando...</div>
                 }
                 {
                     !loading && (
                         <form>
                             {
                                 questions.map((pregunta) => {
-                                    return <QuestionCard key={pregunta.id} preguntaActual={pregunta} />
+                                    return <QuestionCard
+                                        key={pregunta.id}
+                                        preguntaActual={pregunta}
+                                        selectedAnswers={selectedAnswers}
+                                        setSelectedAnswers={setSelectedAnswers}
+                                        mostrarResultado={mostrarResultado}
+                                    />
                                 })
                             }
                         </form>
                     )
                 }
-                <h1>El juego</h1>
+                <div className="level">
+                    <div className="level-left">
+                        {
+                            mostrarResultado &&
+                            <Result valorResultado={result} />
+                        }
+                    </div>
+                    <div className="level-right">
+                        <Button
+                            disabled={selectedAnswers.length !== questions.length || mostrarResultado}
+                            onClick={() => calcularResultado()}
+                            text="Validar" />
+
+                    </div>
+                </div>
             </section>
         </div>
     )
