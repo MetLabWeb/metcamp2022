@@ -19,7 +19,7 @@ function Result({ valorResultado }) {
     return (
         <>
             <h1>{valorResultado} respuestas correctas</h1>
-            <img src={imagen}></img>
+            <img src={imagen} alt="imagen resultado"/>
         </>
     )
 }

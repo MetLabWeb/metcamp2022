@@ -37,10 +37,10 @@ function QuestionCard({ preguntaActual, selectedAnswers, setSelectedAnswers, mos
                         onChange={() => seleccionarRespuesta(preguntaActual.id, opcion.is_correct)}
                     >
                         <input type="radio"
-                            id={`${preguntaActual.id}`}
+                            id={`${opcion.id}`}
                             name={preguntaActual.id}
                             value={opcion.answer} ></input>
-                        <label htmlFor={`${preguntaActual.id}`}
+                        <label htmlFor={`${opcion.id}`}
                             className={mostrarColores(opcion.is_correct)}
                         >&nbsp;{opcion.answer}</label>
                     </div>
